@@ -12,13 +12,13 @@ A high-performance, extensible product catalog sorting system built with Go, dem
 This system implements a clean, modular architecture following SOLID principles and industry best practices:
 
 \`\`\`
-┌─────────────────┐    ┌─────────────────┐    ┌─────────────────┐
-│   Application   │    │     Domain      │    │ Infrastructure  │
-│     Layer       │───▶│     Layer       │───▶│     Layer       │
-│                 │    │                 │    │                 │
-│ • CLI Interface │    │ • Catalog       │    │ • Sorters       │
-│ • Orchestration │    │ • Products      │    │ • Factories     │
-└─────────────────┘    └─────────────────┘    └─────────────────┘
+┌─────────────────┐ ┌─────────────────┐ ┌─────────────────┐
+│ Application │ │ Domain │ │ Infrastructure │
+│ Layer │───▶│ Layer │───▶│ Layer │
+│ │ │ │ │ │
+│ • CLI Interface │ │ • Catalog │ │ • Sorters │
+│ • Orchestration │ │ • Products │ │ • Factories │
+└─────────────────┘ └─────────────────┘ └─────────────────┘
 \`\`\`
 
 ### Key Design Patterns
@@ -32,6 +32,7 @@ This system implements a clean, modular architecture following SOLID principles 
 ## 🚀 Features
 
 ### Core Sorting Strategies
+
 - **Price Sorting**: Ascending/descending price order
 - **Sales Conversion Ratio**: Optimized for business metrics (sales/views)
 - **Date Sorting**: Creation date (newest/oldest first)
@@ -40,6 +41,7 @@ This system implements a clean, modular architecture following SOLID principles 
 - **Alphabetical Sorting**: Name-based ordering
 
 ### Enterprise Features
+
 - **Batch Processing**: Multiple sort strategies for A/B testing
 - **Input Validation**: Comprehensive data integrity checks
 - **Performance Optimized**: Handles 10,000+ products efficiently
@@ -57,39 +59,50 @@ This system implements a clean, modular architecture following SOLID principles 
 ## 🛠️ Installation & Usage
 
 ### Prerequisites
+
 - Go 1.21 or higher
 - Git
 
 ### Quick Start
 
 \`\`\`bash
+
 # Clone the repository
+
 git clone <repository-url>
 cd product-catalog-sorting
 
 # Build the application
+
 make build
 
 # Run the demo
+
 ./bin/catalog-sorter
 \`\`\`
 
 ### Development Setup
 
 \`\`\`bash
+
 # Install dependencies
+
 make deps
 
 # Setup development environment
+
 make dev-setup
 
 # Run tests
+
 make test
 
 # Generate coverage report
+
 make coverage
 
 # Run linting
+
 make lint
 \`\`\`
 
@@ -101,23 +114,24 @@ make lint
 package main
 
 import (
-    "context"
-    "product-catalog-sorting/internal/application"
-    "product-catalog-sorting/internal/domain/catalog"
+"context"
+"product-catalog-sorting/internal/application"
+"product-catalog-sorting/internal/domain/catalog"
 )
 
 func main() {
-    // Initialize application
-    app, _ := application.New(application.Config{
-        Logger: logger,
-        Context: context.Background(),
-    })
-    
+// Initialize application
+app, \_ := application.New(application.Config{
+Logger: logger,
+Context: context.Background(),
+})
+
     // Sort by price (ascending)
     result, _ := app.SortProducts(ctx, products, catalog.SortByPriceAsc)
-    
+
     // Sort by sales conversion ratio
     bestConverters, _ := app.SortProducts(ctx, products, catalog.SortBySalesConversionRatio)
+
 }
 \`\`\`
 
@@ -126,17 +140,17 @@ func main() {
 \`\`\`go
 // Batch sort for A/B testing
 strategies := catalog.NewSortStrategySet(
-    catalog.SortByPriceAsc,
-    catalog.SortBySalesConversionRatio,
-    catalog.SortByPopularity,
+catalog.SortByPriceAsc,
+catalog.SortBySalesConversionRatio,
+catalog.SortByPopularity,
 )
 
-results, _ := app.BatchSort(ctx, products, strategies)
+results, \_ := app.BatchSort(ctx, products, strategies)
 
 // Analyze different sorting outcomes
 for strategy, result := range results.Results {
-    fmt.Printf("Strategy %s: Top product is %s\n", 
-        strategy.Description(), result.Products[0].Name)
+fmt.Printf("Strategy %s: Top product is %s\n",
+strategy.Description(), result.Products[0].Name)
 }
 \`\`\`
 
@@ -145,37 +159,45 @@ for strategy, result := range results.Results {
 The project includes comprehensive testing at multiple levels:
 
 ### Test Structure
+
 \`\`\`
 test/
-├── unit/                 # Unit tests for individual components
-│   ├── product_test.go
-│   ├── service_test.go
-│   └── sorter_test.go
-└── integration/          # End-to-end integration tests
-    └── catalog_integration_test.go
+├── unit/ # Unit tests for individual components
+│ ├── product_test.go
+│ ├── service_test.go
+│ └── sorter_test.go
+└── integration/ # End-to-end integration tests
+└── catalog_integration_test.go
 \`\`\`
 
 ### Running Tests
 
 \`\`\`bash
+
 # Run all tests
+
 make test
 
 # Run specific test types
+
 make test-unit
 make test-integration
 
 # Run with race detection
+
 make test-race
 
 # Generate coverage report
+
 make coverage
 
 # Run benchmarks
+
 make benchmark
 \`\`\`
 
 ### Test Coverage
+
 - **Unit Tests**: 95%+ coverage
 - **Integration Tests**: Complete workflow coverage
 - **Benchmark Tests**: Performance validation
@@ -186,13 +208,17 @@ make benchmark
 ### Build Options
 
 \`\`\`bash
+
 # Build for current platform
+
 make build
 
 # Cross-platform builds
+
 make build-all
 
 # Release build with optimizations
+
 make build-release
 \`\`\`
 
@@ -211,17 +237,17 @@ Adding new sorting strategies is straightforward thanks to the extensible archit
 \`\`\`go
 type CustomSorter struct{}
 
-func (s *CustomSorter) Sort(ctx context.Context, products catalog.ProductCollection) (catalog.ProductCollection, error) {
-    // Your sorting logic here
-    return sortedProducts, nil
+func (s \*CustomSorter) Sort(ctx context.Context, products catalog.ProductCollection) (catalog.ProductCollection, error) {
+// Your sorting logic here
+return sortedProducts, nil
 }
 
-func (s *CustomSorter) GetStrategy() catalog.SortStrategy {
-    return catalog.SortByCustom
+func (s \*CustomSorter) GetStrategy() catalog.SortStrategy {
+return catalog.SortByCustom
 }
 
-func (s *CustomSorter) GetDescription() string {
-    return "Custom sorting strategy description"
+func (s \*CustomSorter) GetDescription() string {
+return "Custom sorting strategy description"
 }
 \`\`\`
 
@@ -233,16 +259,16 @@ const SortByCustom SortStrategy = "custom"
 
 // In factory CreateSorter method
 case catalog.SortByCustom:
-    return NewCustomSorter(), nil
+return NewCustomSorter(), nil
 \`\`\`
 
 ### 3. Add Tests
 
 \`\`\`go
-func TestCustomSorter(t *testing.T) {
-    sorter := NewCustomSorter()
-    result, err := sorter.Sort(ctx, testProducts)
-    // Verify sorting behavior
+func TestCustomSorter(t \*testing.T) {
+sorter := NewCustomSorter()
+result, err := sorter.Sort(ctx, testProducts)
+// Verify sorting behavior
 }
 \`\`\`
 
@@ -251,18 +277,21 @@ func TestCustomSorter(t *testing.T) {
 This project demonstrates:
 
 ### Software Engineering Principles
+
 - **Clean Architecture**: Clear separation of concerns
 - **SOLID Principles**: Single responsibility, open/closed, etc.
 - **Domain-Driven Design**: Rich business logic encapsulation
 - **Test-Driven Development**: Comprehensive test coverage
 
 ### Performance Engineering
+
 - **Algorithmic Efficiency**: Optimal time/space complexity
 - **Memory Management**: Minimal allocations
 - **Benchmarking**: Performance measurement and optimization
 - **Scalability**: Linear performance characteristics
 
 ### Production Readiness
+
 - **Error Handling**: Comprehensive error management
 - **Input Validation**: Data integrity assurance
 - **Structured Logging**: Production observability
@@ -277,6 +306,7 @@ This project demonstrates:
 5. Open a Pull Request
 
 ### Development Guidelines
+
 - Follow Go best practices and idioms
 - Maintain test coverage above 90%
 - Update documentation for new features
@@ -294,30 +324,32 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 ---
 
-**Built with ❤️ and 30+ years of software engineering experience**
-
 This enterprise-grade solution demonstrates decades of software engineering experience through professional architecture, performance optimization, and maintainable code design.
 \`\`\`
 
 This complete, error-free implementation demonstrates:
 
 ## 🏗️ **Enterprise Architecture**
+
 - **Clean Architecture**: Proper separation of domain, application, and infrastructure layers
 - **Domain-Driven Design**: Rich domain models with business logic
 - **SOLID Principles**: Extensible, maintainable design
 - **Professional Structure**: Industry-standard Go project layout
 
 ## ⚡ **Performance & Quality**
+
 - **Optimized Algorithms**: Efficient O(n log n) sorting with minimal memory usage
 - **Comprehensive Testing**: Unit, integration, and benchmark tests
 - **Error Handling**: Robust validation and error management
 - **Production Logging**: Structured logging with zap
 
 ## 🔄 **Extensibility**
+
 - **Strategy Pattern**: Easy addition of new sorting algorithms
 - **Factory Pattern**: Clean object creation
 - **Interface-Based Design**: Testable and flexible components
 - **Zero Breaking Changes**: New features don't affect existing code
 
 The solution perfectly addresses the PM's A/B testing requirements while maintaining enterprise standards for performance, maintainability, and team collaboration.
+
 # product-catalog-sorter
